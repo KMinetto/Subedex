@@ -1,47 +1,41 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div v-if="!twitchIsAuthenticated()">
+    <TwitchConnectionButton></TwitchConnectionButton>
+  </div>
+  <div v-else>
+    <p>Je suis lààààà</p>
+  </div>
 </template>
 
+<script setup>
+import TwitchConnectionButton from "@/components/TwitchConnectionButton.vue";
+
+let accessToken = undefined;
+
+function getUrlQueryStringParams() {
+  const uri = location.hash.slice(1).split("&");
+  const params = {};
+
+  for (let i in uri) {
+    let key = decodeURIComponent(uri[i].split("=")[0]);
+    params[key] = decodeURIComponent(uri[i].split("=")[1]);
+  }
+
+  return params;
+}
+function twitchIsAuthenticated() {
+  const params = getUrlQueryStringParams();
+  accessToken = params.access_token;
+
+  return params.access_token !== undefined;
+}
+
+// TODO: Voir pourquoi quand connexion, le bouton ne part pas
+
+window.addEventListener("load", twitchIsAuthenticated)
+
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
 </style>
